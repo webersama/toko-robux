@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRUTAL HEART | PVP Bracket</title>
+<style>
+:root{--bg:#08090d;--panel:#101219;--panel2:#151821;--red:#d92735;--red2:#7d101b;--text:#f1f1f4;--muted:#9da2b0;--line:#5b2029;--gold:#e6b85c}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#241016 0%,#0b0c11 42%,#06070a 100%);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+header{padding:28px 18px 18px;text-align:center;border-bottom:1px solid #35171e;background:#08090ddd}
+.brand{letter-spacing:.35em;font-size:12px;color:#c8c8ce}.brand b{color:var(--red)}h1{margin:12px 0 6px;font-size:clamp(30px,5vw,54px);letter-spacing:.08em;text-transform:uppercase;text-shadow:0 0 22px #d9273544}h1 span{color:var(--red)}.sub{color:var(--muted);font-size:13px;letter-spacing:.12em}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:18px}.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.tab,button,.file-label{border:1px solid #48232a;background:#11131a;color:#e8e8eb;padding:10px 14px;border-radius:7px;cursor:pointer;font-weight:700}.tab.active{background:#7d101b;border-color:#e23b47;box-shadow:0 0 18px #d9273525}.primary{background:#9f1724;border-color:#e13b48}.tab:hover,button:hover,.file-label:hover{filter:brightness(1.2)}input[type=file]{display:none}
+.info{text-align:center;color:var(--muted);font-size:12px;margin:0 16px 12px}.bracket-wrap{overflow-x:auto;padding:12px 22px 32px}.bracket{min-width:1040px;display:flex;gap:22px;align-items:stretch;justify-content:center;margin:0 auto;max-width:1500px}.round{display:flex;flex-direction:column;flex:1;min-width:210px}.round h2{text-align:center;font-size:12px;letter-spacing:.17em;color:#f0b9be;text-transform:uppercase;border-bottom:1px solid #3d2026;padding:0 0 12px;margin:0 0 12px}.matches{display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:12px}.match{position:relative;background:linear-gradient(135deg,#151720,#0c0d12);border:1px solid #38252b;border-radius:8px;padding:7px;box-shadow:0 6px 18px #0005}.match::after{content:"";position:absolute;right:-12px;top:50%;width:11px;border-top:1px solid #8c303a}.round:last-child .match::after{display:none}.slot{display:flex;align-items:center;gap:6px;min-height:35px;padding:5px 7px;border:1px solid transparent;border-radius:5px;background:#0b0d12;margin:3px 0}.slot input{min-width:0;width:100%;background:transparent;border:0;outline:0;color:var(--text);font-size:12px;font-weight:600}.slot input::placeholder{color:#656a76}.slot .seed{font-size:9px;color:#777e8b;min-width:14px}.slot button{font-size:10px;padding:5px 6px;border-radius:4px;white-space:nowrap;border-color:#333741;color:#9da2b0}.slot.winner{border-color:#b58b36;background:#2b2415}.slot.winner input{color:#ffe1a0}.slot.winner button{background:#73541d;color:#fff0bd;border-color:#b58b36}.vs{text-align:center;color:#7d8491;font-size:9px;letter-spacing:.2em;padding:1px}.match-label{font-size:9px;color:#7c8290;padding:2px 6px 4px;letter-spacing:.1em}.champion{border-color:#80642d;background:linear-gradient(135deg,#282114,#11100d)}.champion .slot{min-height:45px}.champion .slot.winner{box-shadow:0 0 18px #e6b85c24}.final-note{color:#9da2b0;text-align:center;font-size:11px;padding:0 15px 28px}.foot{border-top:1px solid #28161a;text-align:center;padding:20px;color:#777d8a;font-size:10px;letter-spacing:.12em}.foot strong{color:#c72a37}.status{color:#c9cbd2;font-size:12px;text-align:center;margin-bottom:8px}
+@media(max-width:600px){header{padding-top:22px}.toolbar{padding:12px}.bracket-wrap{padding-left:12px;padding-right:12px}.sub{line-height:1.6}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand">✦ <b>BRUTAL HEART</b> ✦ PRESENTS</div>
+ <h1>PVP <span>BRACKET</span></h1>
+ <div class="sub">/WARP ARENA · TOURNAMENT TREE · EDITABLE</div>
+</header>
+<div class="toolbar">
+ <div class="tabs" role="tablist">
+  <button class="tab active" data-game="crystal">💎 CRYSTAL PVP</button>
+  <button class="tab" data-game="mace">🔨 MACE PVP</button>
+  <button class="tab" data-game="uhc">⚔ UHC PVP</button>
+  <button class="tab" data-game="final">👑 FINAL ANTAR PEMENANG</button>
+ </div>
+</div>
+<div class="toolbar" style="padding-top:0">
+ <button class="primary" id="editBtn">✎ Aktifkan Edit</button>
+ <button id="saveBtn">Simpan di Browser</button>
+ <button id="exportBtn">Export JSON</button>
+ <label class="file-label" for="importFile">Import JSON</label><input id="importFile" type="file" accept=".json,application/json">
+ <button id="resetBtn">Reset Bracket</button>
+</div>
+<p class="info">Isi nama pemain, lalu tekan tombol <b>MENANG</b> untuk meneruskan pemenang ke ronde berikutnya. Bracket ini memakai format 16 slot.</p>
+<div class="status" id="status">Mode lihat · Aktifkan Edit untuk mengubah nama pemain.</div>
+<div class="bracket-wrap"><main class="bracket" id="bracket"></main></div>
+<div class="final-note">Setiap game memiliki 3 ronde utama. Pemenang dari setiap game dapat dimasukkan ke tab <b>FINAL ANTAR PEMENANG</b>.</div>
+<div class="foot">BRUTAL HEART · <strong>FIGHT WITH HONOR</strong> · /WARP ARENA</div>
+<script>
+const roundNames=['ROUND 1 · 16 BESAR','ROUND 2 · 8 BESAR','ROUND 3 · SEMIFINAL','FINAL'];
+const games=['crystal','mace','uhc','final'];
+const labels={crystal:'CRYSTAL PVP',mace:'MACE PVP',uhc:'UHC PVP',final:'FINAL ANTAR PEMENANG'};
+let current='crystal', editing=false;
+const blankGame=()=>({names:Array.from({length:16},(_,i)=>''),winners:Array(15).fill(null)});
+let data={crystal:blankGame(),mace:blankGame(),uhc:blankGame(),final:blankGame()};
+const bracket=document.getElementById('bracket'),status=document.getElementById('status');
+function matchInfo(round,index){if(round===0)return {a:index*2,b:index*2+1,out:index};let start=[0,8,12][round-1];let prevStart=[0,8,12][round-1];return {a:prevStart+index*2,b:prevStart+index*2+1,out:start+index};}
+function getMatchSlots(round,index){if(round===0)return [index*2,index*2+1];if(round===1)return [16+index*2,16+index*2+1];if(round===2)return [24+index*2,24+index*2+1];return [28,29];}
+function getWinner(game,matchIndex){let w=game.winners[matchIndex];if(w===null||w===undefined)return '';return w;}
+function matchName(game,round,index,side){
+ if(round===0)return game.names[index*2+side]||'Slot '+(index*2+side+1);
+ const prevMatch=index*2+side,prevIndex=round===1?prevMatch:round===2?8+prevMatch:12+prevMatch;
+ const w=game.winners[prevIndex];
+ if(w===null||w===undefined)return 'Pemenang Match '+(prevMatch+1);
+ return matchNameFromWinner(game,prevIndex,w);
+}
+function matchNameFromWinner(game,idx,w){
+ // Resolve winner to the original player name using the match's feeder bracket.
+ let r=idx<8?0:idx<12?1:idx<14?2:3;
+ let i=r===0?idx:r===1?idx-8:r===2?idx-12:idx-14;
+ if(r===0)return game.names[idx*2+w]||'Pemain '+(idx*2+w+1);
+ let a=matchName(game,r,i,0),b=matchName(game,r,i,1);return w===0?a:b;
+}
+function winnerName(game,idx){if(game.winners[idx]===null||game.winners[idx]===undefined)return '';return matchNameFromWinner(game,idx,game.winners[idx]);}
+function render(){
+ bracket.innerHTML='';
+ const counts=[8,4,2,1],starts=[0,8,12,14];
+ counts.forEach((count,r)=>{
+  const col=document.createElement('section');col.className='round';
+  const h=document.createElement('h2');h.textContent=roundNames[r];col.appendChild(h);
+  const ms=document.createElement('div');ms.className='matches';
+  for(let i=0;i<count;i++){
+   const idx=starts[r]+i, m=document.createElement('div');m.className='match'+(r===3?' champion':'');
+   const lab=document.createElement('div');lab.className='match-label';lab.textContent='MATCH '+(idx+1);m.appendChild(lab);
+   for(let side=0;side<2;side++){
+    const s=document.createElement('div');s.className='slot';
+    const win=data[current].winners[idx];
+    if(win===side)s.classList.add('winner');
+    const seed=document.createElement('span');seed.className='seed';seed.textContent=side===0?'A':'B';s.appendChild(seed);
+    const inp=document.createElement('input');inp.placeholder= r===0?'Nama pemain '+(i*2+side+1):'Pemenang match';inp.value= r===0?data[current].names[i*2+side]:matchName(data[current],r,i,side);
+    inp.disabled=!editing || r!==0;
+    inp.setAttribute('aria-label','Nama pemain match '+(idx+1)+' sisi '+(side+1));
+    inp.addEventListener('change',()=>{data[current].names[i*2+side]=inp.value.trim();clearDownstream(idx);render();});
+    s.appendChild(inp);
+    const b=document.createElement('button');b.textContent=win===side?'✓ MENANG':'MENANG';b.disabled=!editing;
+    b.addEventListener('click',()=>{data[current].winners[idx]=side;clearDownstream(idx);render();});
+    s.appendChild(b);m.appendChild(s);
+    if(side===0){const vs=document.createElement('div');vs.className='vs';vs.textContent='VS';m.appendChild(vs);}
+   }
+   ms.appendChild(m);
+  }
+  col.appendChild(ms);bracket.appendChild(col);
+ });
+ status.textContent=editing?'MODE EDIT AKTIF · Klik MENANG untuk memajukan pemain.':'Mode lihat · Aktifkan Edit untuk mengubah nama dan hasil.';
+ document.getElementById('editBtn').textContent=editing?'✓ Selesai Edit':'✎ Aktifkan Edit';
+ document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.game===current));
+}
+function clearDownstream(idx){let start=idx<8?8:idx<12?12:idx<14?14:15;for(let i=start;i<15;i++)data[current].winners[i]=null;}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{current=b.dataset.game;render();}));
+document.getElementById('editBtn').addEventListener('click',()=>{editing=!editing;render();});
+document.getElementById('saveBtn').addEventListener('click',()=>{try{localStorage.setItem('brutalHeartBracket',JSON.stringify(data));status.textContent='Tersimpan di browser ini.';}catch(e){status.textContent='Tidak bisa menyimpan di browser ini.';}});
+document.getElementById('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='brutal-heart-bracket.json';a.click();URL.revokeObjectURL(a.href);});
+document.getElementById('importFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);games.forEach(g=>{if(d[g]&&Array.isArray(d[g].names)&&Array.isArray(d[g].winners))data[g]=d[g];});render();status.textContent='Data bracket berhasil diimpor.';}catch(_){status.textContent='File JSON tidak valid.';}};r.readAsText(f);});
+document.getElementById('resetBtn').addEventListener('click',()=>{if(confirm('Reset semua nama dan hasil bracket?')){data={crystal:blankGame(),mace:blankGame(),uhc:blankGame(),final:blankGame()};render();}});
+try{const saved=localStorage.getItem('brutalHeartBracket');if(saved){const d=JSON.parse(saved);games.forEach(g=>{if(d[g])data[g]=d[g];});}}catch(e){}
+render();
+</script>
+</body></html>
